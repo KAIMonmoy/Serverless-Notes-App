@@ -93,7 +93,7 @@ module.exports.listNote = async (_event) => {
 
     const notes = await documentClient.scan(params).promise();
 
-    return sendResponse(200, notes);
+    return sendResponse(200, notes.Items);
   } catch (err) {
     return sendErrorResponse(err);
   }
