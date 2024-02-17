@@ -4,7 +4,11 @@ const DynamoDB = require('aws-sdk/clients/dynamodb');
 const { sendResponse, sendErrorResponse } = require('./utils');
 
 const documentClient = new DynamoDB.DocumentClient({
-  region: 'ap-southeast-1'
+  region: 'ap-southeast-1',
+  maxRetries: 3,
+  httpOptions: {
+    timeout: 5000,
+  },
 });
 const NOTES_TABLE_NAME = process.env.NOTES_TABLE;
 
