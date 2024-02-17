@@ -1,7 +1,7 @@
 'use strict';
 
 const DynamoDB = require('aws-sdk/clients/dynamodb');
-
+const { sendResponse, sendErrorResponse } = require('./utils');
 
 const documentClient = new DynamoDB.DocumentClient({
   region: 'ap-southeast-1'
@@ -26,21 +26,9 @@ module.exports.createNote = async (event) => {
     };
 
     await documentClient.put(params).promise();
-
-    return {
-      statusCode: 201,
-      body: JSON.stringify({
-        message: 'Note created',
-      }),
-    };
+    return sendResponse(201, { message: 'Note created' });
   } catch (err) {
-    return {
-      statusCode: err.statusCode || 500,
-      body: JSON.stringify({
-        message: 'Failed to create note',
-        error: err,
-      }),
-    }
+    return sendErrorResponse(err);
   }
 }
 
@@ -68,20 +56,9 @@ module.exports.updateNote = async (event) => {
 
     await documentClient.update(params).promise();
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        message: 'Note updated',
-      }),
-    };
+    return sendResponse(200, { message: 'Note updated' });
   } catch (err) {
-    return {
-      statusCode: err.statusCode || 500,
-      body: JSON.stringify({
-        message: 'Failed to update note',
-        error: err,
-      }),
-    }
+    return sendErrorResponse(err);
   }
 }
 
@@ -99,20 +76,9 @@ module.exports.deleteNote = async (event) => {
 
     await documentClient.delete(params).promise();
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        message: 'Note deleted',
-      }),
-    };
+    return sendResponse(200, { message: 'Note deleted' });
   } catch (err) {
-    return {
-      statusCode: err.statusCode || 500,
-      body: JSON.stringify({
-        message: 'Failed to delete note',
-        error: err,
-      }),
-    }
+    return sendErrorResponse(err);
   }
 }
 
@@ -127,17 +93,8 @@ module.exports.listNote = async (_event) => {
 
     const notes = await documentClient.scan(params).promise();
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify(notes.Items),
-    };
+    return sendResponse(200, notes);
   } catch (err) {
-    return {
-      statusCode: err.statusCode || 500,
-      body: JSON.stringify({
-        message: 'Failed to list note',
-        error: err,
-      }),
-    }
+    return sendErrorResponse(err);
   }
 }
